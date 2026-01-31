@@ -1,0 +1,13 @@
+# Bytecode do Python
+__pycache__/
+*.pyc
+
+# Arquivos do VS Code
+.vscode/
+
+# Arquivos temporários do sistema
+.DS_Store
+Thumbs.db
+
+# Arquivos de dados que não quer subir
+data/
