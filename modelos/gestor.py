@@ -9,12 +9,13 @@ class Gerenciador:
         p1 = Produto("1", "Arroz", "Marca X", "kg", "5")
         p2 = Produto("2", "Feijão", "Marca Y", "kg", "1")
         
-        self.produtos_cadastradis.append(p1)
-        self.produtos_cadastradis.append(p2)
+        self.produtos_cadastrados.append(p1)
+        self.produtos_cadastrados.append(p2)
 
         self.compra_atual = None
 
     def adicionar_nova_compra(self):
+        pass
         #pede o nome do mercado
         #pede a data da compra
         # cria uma lista de item vazia
@@ -23,6 +24,7 @@ class Gerenciador:
         # retorna nova compra
 
     def adicionar_novo_item(self):
+        pass
         #pede o codigo de barras
         #chama a funcao buscar item
         #se a funcao buscar item retornar verdadeiro puxe o valores dos produto dela e pule adicionar novo produto
@@ -32,15 +34,15 @@ class Gerenciador:
         #puxa funcao da classe item com valor total
         #retorna novo item
 
-
     def adicionar_novo_produto(self):
+        pass
         #ele recebe novo codigo de barra
         #verifica funcao buscar produto
         #se verdadeira retorna valores do produto
         #se falsa pede restante dos dados pra catalogar produto e retorna novo produto     
 
-    def buscar_produto(self):
-        #recebe o codigo de barra novo
-        #verifica se ele ja existe
-        #se sim retorna valores do produto
-        #se nao retorna falso
+    def buscar_produto(self, codigo):
+        for produto in self.produtos_cadastrados:
+            if produto.codigo == codigo:
+                return produto
+        return None
