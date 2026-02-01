@@ -10,4 +10,4 @@ __pycache__/
 Thumbs.db
 
 # Arquivos de dados que não quer subir
-data/
+*.txt
