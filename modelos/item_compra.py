@@ -45,8 +45,12 @@ class Item:
             str: Informações do item formatadas em uma única linha.
         '''
         return (
-            f'{self.produto.nome_produto} | '
-            f'{self.valor_unitario:.2f} | '
+            f'{self.produto.codigo:<5} | '
+            f'{self.produto.nome_produto:<15} | ' 
+            f'{self.produto.nome_marca:<15} | '
+            f'{self.produto.unidade_medida:<15} | '
+            f'{self.produto.qtd_unidade:<15} | '
+            f'{self.valor_unitario:<5.2f} | '
             f'{self.quantidade} | '
-            f'Subtotal: {self.calcular_total():.2f}'
+            f'Subtotal: {self.calcular_total():<5.2f}'
         )
