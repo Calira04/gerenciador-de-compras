@@ -5,6 +5,7 @@ from modelos.compra import Compra
 class Gerenciador:
     def __init__(self):
         self.produtos_cadastrados = []
+        self.itens_cadastrados = []
 
         p1 = Produto("1", "Arroz", "Marca X", "kg", "5")
         p2 = Produto("2", "Feijão", "Marca Y", "kg", "1")
@@ -24,23 +25,24 @@ class Gerenciador:
         # retorna nova compra
 
     def adicionar_novo_item(self):
-        pass
-        #pede o codigo de barras
-        #chama a funcao buscar item
-        #se a funcao buscar item retornar verdadeiro puxe o valores dos produto dela e pule adicionar novo produto
-        #se falso chame adicionar novo produto
-        #adiciona o valor
-        #adiciona preco
-        #puxa funcao da classe item com valor total
-        #retorna novo item
+        codigo = int(input('Digite o codigo de barras: '))
+        produto = self.buscar_produto(codigo)
+        if produto is None:
+            produto = self.adicionar_novo_produto(codigo)
+        valor_unitario = float(input('Digite o valor do item R$: '))
+        quantidade = int(input('Digite a quantidade: '))
+        item = Item(produto, valor_unitario, quantidade)
+        return item
 
-    def adicionar_novo_produto(self):
-        pass
-        #ele recebe novo codigo de barra
-        #verifica funcao buscar produto
-        #se verdadeira retorna valores do produto
-        #se falsa pede restante dos dados pra catalogar produto e retorna novo produto     
-
+    def adicionar_novo_produto(self, codigo):
+        nome_produto = str(input('Digite o nome do produto: '))
+        nome_marca = str(input('Digite o nome da marca: '))
+        unidade_medida = str(input('Digite a unidade de medida: '))
+        qtd_unidade = float(input(f'Quanto(s) {unidade_medida}: '))
+        produto = Produto(codigo, nome_produto, nome_marca, unidade_medida, qtd_unidade)
+        self.produtos_cadastrados.append(produto)
+        return produto
+    
     def buscar_produto(self, codigo):
         for produto in self.produtos_cadastrados:
             if produto.codigo == codigo:
