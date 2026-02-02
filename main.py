@@ -3,9 +3,8 @@ from modelos.item_compra import Item
 from modelos.compra import Compra
 from modelos.gestor import Gerenciador
 
-from modelos.gestor import Gerenciador
-
 def main():
+
     gestor = Gerenciador()
     
     print("=== TESTE DE COMPRA ===")
