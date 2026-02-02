@@ -2,6 +2,9 @@ from modelos.produto import Produto
 from modelos.item_compra import Item
 from modelos.compra import Compra
 
+caminho_produtos = 'data/produtos.txt'
+caminho_compras = 'data/compras.txt'
+
 class Gerenciador:
     '''
     Classe para gerenciar produtos e compras.
@@ -13,6 +16,7 @@ class Gerenciador:
         '''
         self.produtos_cadastrados = []
         self.compras_cadastradas = []
+        self.carregar_produtos()
 
     def adicionar_nova_compra(self):
         '''
@@ -34,6 +38,8 @@ class Gerenciador:
             print(f'Total acumulado: R$ {compra_atual.calcular_total_compra():.2f}')
 
         self.compras_cadastradas.append(compra_atual)
+        self.salvar_compras()
+
         print('\n--- COMPRA SALVA COM SUCESSO ---')
 
     def adicionar_novo_item(self):
@@ -67,6 +73,8 @@ class Gerenciador:
         
         produto = Produto(codigo, nome_produto, nome_marca, unidade_medida, qtd_unidade)
         self.produtos_cadastrados.append(produto)
+
+        self.salvar_produtos()
         
         return produto
     
@@ -79,3 +87,58 @@ class Gerenciador:
             if produto.codigo == codigo:
                 return produto
         return None
+
+    def carregar_produtos(self):
+        with open(caminho_produtos, 'r') as arquivo:
+            for linha in arquivo:
+                codigo, nome, marca, unidade, qtd = linha.strip().split(',')
+                produto = Produto(codigo, nome, marca, unidade, float(qtd))
+                self.produtos_cadastrados.append(produto)
+    
+    def salvar_produtos(self):
+        with open(caminho_produtos, 'w') as arquivo:
+            for produto in self.produtos_cadastrados:
+                arquivo.write(f'{produto.codigo},{produto.nome_produto},{produto.nome_marca},{produto.unidade_medida},{produto.qtd_unidade}\n')
+    
+    def carregar_compras(self):
+        with open(caminho_compras, 'r') as arquivo:
+            next(arquivo)  # pula o cabeçalho
+            compras_dict = {}  # para agrupar itens pela mesma compra
+            
+            for linha in arquivo:
+                linha = linha.strip()
+                if not linha:
+                    continue
+                
+                data, mercado, codigo, nome, marca, unidade_medida, qtd_medida, quantidade, valor_unitario, valor_total = linha.split(',')
+                
+                codigo = codigo
+                qtd_medida = float(qtd_medida)
+                quantidade = float(quantidade)
+                valor_unitario = float(valor_unitario)
+                
+                # recria o produto e o item
+                produto = Produto(codigo, nome, marca, unidade_medida, qtd_medida)
+                item = Item(produto, valor_unitario, quantidade)
+                
+                # chave única para agrupar itens da mesma compra
+                chave = (data, mercado)
+                if chave not in compras_dict:
+                    compras_dict[chave] = Compra(mercado, data)
+                
+                compras_dict[chave].adicionar_item(item)
+            
+            # adiciona todas as compras ao histórico do Gestor
+            self.compras_cadastradas = list(compras_dict.values())
+
+    def salvar_compras(self):
+        with open(caminho_compras, 'w') as arquivo:
+            # percorre todas as compras
+            for compra in self.compras_cadastradas:
+                for item in compra.itens:
+                    produto = item.produto
+                    # escreve os dados no formato CSV
+                    arquivo.write(f'{compra.data_compra},{compra.nome_mercado},{produto.codigo},{produto.nome_produto},'
+                                f'{produto.nome_marca},{produto.unidade_medida},{produto.qtd_unidade},{item.quantidade},'
+                                f'{item.valor_unitario},{item.calcular_total():.2f}\n')
+        
