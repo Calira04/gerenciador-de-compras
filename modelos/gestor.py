@@ -18,6 +18,28 @@ class Gerenciador:
         self.compras_cadastradas = []
         self.carregar_produtos()
 
+    def solicitar_codigo_barras(self):
+        while True:
+            codigo = input('Digite o código de barras: ').strip()
+
+            # campo vazio
+            if not codigo:
+                print('Código vazio. Digite novamente.')
+                continue
+
+            # só dígitos
+            if not codigo.isdigit():
+                print('Código inválido. Use apenas números.')
+                continue
+
+            # regra de domínio (exemplo)
+            if len(codigo) < 4:
+                print('Código muito curto. Digite novamente.')
+                continue
+
+            # passou por todas as validações
+            return codigo
+
     def adicionar_nova_compra(self):
         '''
         Cria uma nova compra, adiciona itens e guarda no histórico.
@@ -46,7 +68,7 @@ class Gerenciador:
         '''
         Solicita dados do item e cria um Item associado a um Produto.
         '''
-        codigo = int(input('Digite o código de barras: '))
+        codigo = self.solicitar_codigo_barras()
         produto = self.buscar_produto(codigo)
         
         if produto is None:
