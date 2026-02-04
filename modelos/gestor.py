@@ -1,3 +1,4 @@
+from datetime import datetime
 from modelos.produto import Produto
 from modelos.item_compra import Item
 from modelos.compra import Compra
@@ -39,13 +40,68 @@ class Gerenciador:
 
             # passou por todas as validações
             return codigo
+        
+    def solicitar_nome(self, rotulo):
+        while True:
+            nome = input(f'Digite o nome do {rotulo}: ').strip()
+
+            # campo vazio
+            if not nome:
+                print(f'O nome do {rotulo} não pode ser vazio.')
+                continue
+
+            # normalização simples (opcional, mas recomendada)
+            nome = nome.upper()
+
+            return nome
+    
+    def solicitar_float(self, rotulo):
+        while True:
+            valor = input(f'Digite o {rotulo}: ').strip()
+
+            if not valor:
+                print(f'O {rotulo} não pode ser vazio.')
+                continue
+
+            # aceita vírgula como separador decimal
+            valor = valor.replace(',', '.')
+
+            try:
+                valor = float(valor)
+            except ValueError:
+                print(f'Valor inválido para {rotulo}. Digite um número.')
+                continue
+
+            if valor < 0:
+                print(f'O {rotulo} não pode ser negativo.')
+                continue
+
+            return valor
+
+    from datetime import datetime
+
+    def solicitar_data(self, rotulo):
+        while True:
+            data_txt = input(f'Digite a {rotulo} (dd/mm/aaaa): ').strip()
+
+            if not data_txt:
+                print(f'A {rotulo} não pode ser vazia.')
+                continue
+
+            try:
+                data = datetime.strptime(data_txt, '%d/%m/%Y').date()
+            except ValueError:
+                print('Data inválida. Use o formato dd/mm/aaaa.')
+                continue
+
+            return data
 
     def adicionar_nova_compra(self):
         '''
         Cria uma nova compra, adiciona itens e guarda no histórico.
         '''
-        nome_mercado = input('Digite o nome do mercado: ')
-        data_compra = input('Digite a data da compra: ')
+        nome_mercado = self.solicitar_nome('mercado')
+        data_compra = self.solicitar_data('data da compra')
         
         compra_atual = Compra(nome_mercado, data_compra)
         
@@ -74,8 +130,8 @@ class Gerenciador:
         if produto is None:
             produto = self.adicionar_novo_produto(codigo)
         
-        valor_unitario = float(input('Digite o valor do item R$: '))
-        quantidade = int(input('Digite a quantidade: '))
+        valor_unitario = self.solicitar_float('valor do item (R$)')
+        quantidade = self.solicitar_float('quantidade')
         
         item = Item(produto, valor_unitario, quantidade)
         
@@ -88,10 +144,10 @@ class Gerenciador:
         '''
         Cria um novo produto e adiciona à lista de produtos cadastrados.
         '''
-        nome_produto = input('Digite o nome do produto: ')
-        nome_marca = input('Digite o nome da marca: ')
-        unidade_medida = input('Digite a unidade de medida: ')
-        qtd_unidade = float(input(f'Quanto(s) {unidade_medida}: '))
+        nome_produto = self.solicitar_nome('produto')
+        nome_marca = self.solicitar_nome('marca')
+        unidade_medida = self.solicitar_nome('unidade de medida (L, ML, KG, G)')
+        qtd_unidade = self.solicitar_float('quantidade em (L, ML, KG, G)')
         
         produto = Produto(codigo, nome_produto, nome_marca, unidade_medida, qtd_unidade)
         self.produtos_cadastrados.append(produto)
